@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'products',
+    'orders',
+    'users',
+    'paylater',
 
 ]
 
@@ -108,17 +111,34 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-# --- CORS HEADERS SETTINGS ---
-# For development, you can allow all origins. In production, restrict this.
-CORS_ALLOW_ALL_ORIGINS = True # Be cautious with this in production!
-
-# Alternatively, specify allowed origins:
+# CORS Headers (important for React Native)
+CORS_ALLOW_ALL_ORIGINS = True # For development, broaden restrictions in production
 # CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:8081",  # React Native default development port
-#     "http://127.0.0.1:8081",
-#     # Add your production React Native app's domain here later
+#     "http://localhost:3000", # Example for web client
+#     "http://localhost:8081", # React Native dev server
 # ]
-# CORS_URLS_REGEX = r"^/api/.*$" # Only apply CORS to /api/ paths
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/0' # Use your Redis URL
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Lagos' # IMPORTANT: Set your actual timezone
+CELERY_TASK_TRACK_STARTED = True # Track task status
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True # Important for Docker/startup
+
 
 ROOT_URLCONF = 'apis.urls'
 
